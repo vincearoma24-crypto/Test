@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Book</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      background-color: #add8e6;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    .book {
+      width: 700px;
+      height: 400px;
+      perspective: 2000px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+    }
+    .page {
+      width: 50%;
+      height: 100%;
+      background: rgba(255,255,255,0.95);
+      box-sizing: border-box;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+      padding: 30px;
+      overflow-y: auto;
+      border-radius: 5px;
+    }
+    .left-page {
+      border-right: 2px solid #999;
+      transform-origin: right center;
+      transition: transform 1s ease-in-out;
+      backface-visibility: hidden;
+      position: relative;
+      z-index: 2;
+    }
+    .right-page {
+      border-left: 2px solid #999;
+      transform-origin: left center;
+      transition: transform 1s ease-in-out;
+      backface-visibility: hidden;
+      position: relative;
+      z-index: 2;
+    }
+    .page h2 {
+      margin-top: 0;
+      color: #1e3f66;
+    }
+    .controls {
+      margin-top: 15px;
+      text-align: center;
+      z-index: 2;
+    }
+    button {
+      background: #1e3f66;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      margin: 0 5px;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+      display: inline-block;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    button:hover {
+      background: #16324f;
+      transform: scale(1.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .page-indicator {
+      display: inline-block;
+      margin: 0 10px;
+      font-size: 16px;
+      color: #1e3f66;
+      font-weight: bold;
+    }
+    /* Flip animations */
+    .flip-left {
+      transform: rotateY(-180deg);
+    }
+    .flip-right {
+      transform: rotateY(180deg);
+    }
+  </style>
+</head>
+<body>
+  <!-- Book -->
+  <div class="book">
+    <div class="page left-page" id="leftPage"></div>
+    <div class="page right-page" id="rightPage"></div>
+  </div>
+  <div class="controls">
+    <button onclick="prevPage()">◀ Prev</button>
+    <span class="page-indicator" id="pageIndicator"></span>
+    <button onclick="nextPage()">Next ▶</button>
+  </div>
+
+  <script>
+    const pages = [
+      "Page 1 — Welcome<br><br>This is the first page of your interactive book.",
+      "Page 2 — Story<br><br>Here you can write your story or message.",
+      "Page 3 — More<br><br>Another section of your book.",
+      "Page 4 — Closing<br><br>Thank you for reading!"
+    ];
+
+    let currentPage = 0;
+    const leftPage = document.getElementById('leftPage');
+    const rightPage = document.getElementById('rightPage');
+    const pageIndicator = document.getElementById('pageIndicator');
+
+    function renderPages() {
+      leftPage.innerHTML = pages[currentPage] || "";
+      rightPage.innerHTML = pages[currentPage + 1] || "";
+      updateIndicator();
+    }
+
+    function updateIndicator() {
+      pageIndicator.textContent = `Pages ${currentPage + 1}-${Math.min(currentPage + 2, pages.length)} of ${pages.length}`;
+    }
+
+    function nextPage() {
+      if (currentPage < pages.length - 2) {
+        rightPage.classList.add('flip-left');
+        setTimeout(() => {
+          currentPage += 2;
+          rightPage.classList.remove('flip-left');
+          renderPages();
+        }, 1000);
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 0) {
+        leftPage.classList.add('flip-right');
+        setTimeout(() => {
+          currentPage -= 2;
+          leftPage.classList.remove('flip-right');
+          renderPages();
+        }, 1000);
+      }
+    }
+
+    renderPages();
+  </script>
+</body>
+</html>
